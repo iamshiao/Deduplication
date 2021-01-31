@@ -48,10 +48,10 @@
             this.button_selectFolder.UseVisualStyleBackColor = true;
             this.button_selectFolder.Click += new System.EventHandler(this.button_selectFolder_Click);
             // 
-            // textBox1
+            // textBox_srcPath
             // 
             this.textBox_srcPath.Location = new System.Drawing.Point(93, 51);
-            this.textBox_srcPath.Name = "textBox1";
+            this.textBox_srcPath.Name = "textBox_srcPath";
             this.textBox_srcPath.Size = new System.Drawing.Size(695, 25);
             this.textBox_srcPath.TabIndex = 1;
             // 
@@ -81,6 +81,7 @@
             this.button_run.TabIndex = 4;
             this.button_run.Text = "RUN";
             this.button_run.UseVisualStyleBackColor = true;
+            this.button_run.Click += new System.EventHandler(this.button_run_Click);
             // 
             // dataGridView1
             // 

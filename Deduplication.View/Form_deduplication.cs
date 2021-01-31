@@ -1,4 +1,5 @@
 ﻿using Deduplication.Controller.Algorithm;
+using Deduplication.Model.DTO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,6 +14,8 @@ namespace Deduplication.View
 {
     public partial class Form_deduplication : Form
     {
+        ProgressForm _progressforms = new ProgressForm();
+
         public Form_deduplication()
         {
             InitializeComponent();
@@ -36,6 +39,27 @@ namespace Deduplication.View
             {
                 textBox_srcPath.Text = folderBrowserDialog_srcPath.SelectedPath;
             }
+        }
+
+        private void button_run_Click(object sender, EventArgs e)
+        {
+            _progressforms.Show();
+            ClearProgress();
+        }
+
+        private void ClearProgress()
+        {
+            _progressforms.StartPosition = FormStartPosition.Manual;
+            _progressforms.Location = new Point(this.Location.X + _progressforms.Width + 10, this.Location.Y);
+            ProgressInfo tmp = new ProgressInfo()
+            {
+                Total = 1,
+                Processed = 0,
+                Message = ""
+            };
+            _progressforms.UpdateProgress(tmp, "files");
+            _progressforms.UpdateProgress(tmp, "bytes");
+            _progressforms.UpdateProgress(tmp, "chunks");
         }
     }
 }
