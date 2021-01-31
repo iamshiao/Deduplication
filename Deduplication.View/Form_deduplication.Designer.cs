@@ -33,9 +33,9 @@
             this.comboBox_algorithm = new System.Windows.Forms.ComboBox();
             this.label_algorithm = new System.Windows.Forms.Label();
             this.button_run = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridView_storedFiles = new System.Windows.Forms.DataGridView();
             this.folderBrowserDialog_srcPath = new System.Windows.Forms.FolderBrowserDialog();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_storedFiles)).BeginInit();
             this.SuspendLayout();
             // 
             // button_selectFolder
@@ -83,22 +83,22 @@
             this.button_run.UseVisualStyleBackColor = true;
             this.button_run.Click += new System.EventHandler(this.button_run_Click);
             // 
-            // dataGridView1
+            // dataGridView_storedFiles
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 86);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.RowTemplate.Height = 27;
-            this.dataGridView1.Size = new System.Drawing.Size(776, 281);
-            this.dataGridView1.TabIndex = 5;
+            this.dataGridView_storedFiles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView_storedFiles.Location = new System.Drawing.Point(12, 86);
+            this.dataGridView_storedFiles.Name = "dataGridView_storedFiles";
+            this.dataGridView_storedFiles.RowHeadersWidth = 51;
+            this.dataGridView_storedFiles.RowTemplate.Height = 27;
+            this.dataGridView_storedFiles.Size = new System.Drawing.Size(776, 281);
+            this.dataGridView_storedFiles.TabIndex = 5;
             // 
             // Form_deduplication
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 379);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.dataGridView_storedFiles);
             this.Controls.Add(this.button_run);
             this.Controls.Add(this.label_algorithm);
             this.Controls.Add(this.comboBox_algorithm);
@@ -106,7 +106,7 @@
             this.Controls.Add(this.button_selectFolder);
             this.Name = "Form_deduplication";
             this.Text = "Deduplication";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_storedFiles)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -119,7 +119,7 @@
         private System.Windows.Forms.ComboBox comboBox_algorithm;
         private System.Windows.Forms.Label label_algorithm;
         private System.Windows.Forms.Button button_run;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dataGridView_storedFiles;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog_srcPath;
     }
 }

@@ -1,10 +1,14 @@
-﻿using Deduplication.Controller.Algorithm;
+﻿using Deduplication.Controller;
+using Deduplication.Controller.Algorithm;
+using Deduplication.Controller.Extensions;
+using Deduplication.Model.DAL;
 using Deduplication.Model.DTO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,10 +45,37 @@ namespace Deduplication.View
             }
         }
 
-        private void button_run_Click(object sender, EventArgs e)
+        private async void button_run_Click(object sender, EventArgs e)
         {
+            var filePaths = Directory.GetFiles(textBox_srcPath.Text, "*.*", SearchOption.TopDirectoryOnly);
+            var fileViewModels = filePaths.Select(path => new FileViewModel()
+            {
+                Name = Path.GetFileName(path),
+                Bytes = File.ReadAllBytes(path)
+            });
+
+
+            var algSelected = comboBox_algorithm.Text;
+            var storage = new MemoryStorage();
+
             _progressforms.Show();
             ClearProgress();
+            DeduplicateController deduCtrl = new DeduplicateController(algSelected, storage, _progressforms.UpdateProgress);
+            await Task.Run(() => { deduCtrl.ImportFiles(fileViewModels); });
+            var storedFiles = storage.GetAllFileViewModels().ToList();
+            var fvmGridSrc = storedFiles.Select(fvm => new
+            {
+                Name = fvm.Name,
+                Size = GeneralExtension.SizeSuffix(fvm.Size),
+                ChunkCount = fvm.Chunks.Count(),
+                ProcessTime = $"{fvm.ProcessTime:hh\\:mm\\:ss\\:ms}"
+            }).ToList();
+            dataGridView_storedFiles.DataSource = fvmGridSrc;
+
+            for (int i = 0; i < dataGridView_storedFiles.Rows.Count; i++)
+            {
+                dataGridView_storedFiles.Rows[i].Tag = storedFiles[i].Chunks.ToList();
+            }
         }
 
         private void ClearProgress()
