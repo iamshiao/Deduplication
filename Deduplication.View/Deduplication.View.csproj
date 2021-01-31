@@ -79,5 +79,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Deduplication.Controller\Deduplication.Controller.csproj">
+      <Project>{DE09920D-1D4D-4A86-8C97-B2D20A19041E}</Project>
+      <Name>Deduplication.Controller</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

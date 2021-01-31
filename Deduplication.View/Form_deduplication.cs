@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Deduplication.Controller.Algorithm;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,17 @@ namespace Deduplication.View
         public Form_deduplication()
         {
             InitializeComponent();
+            InitAlgorithmCombobox();
+        }
+
+        private void InitAlgorithmCombobox()
+        {
+            var theInterface = typeof(IDeduplicationAlgorithm);
+            var algorithmClasses = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a => a.GetTypes()).Where(t => theInterface.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+            var comboboxDataSrc = algorithmClasses.Select(c => c.Name).ToList();
+            comboBox_algorithm.DataSource = comboboxDataSrc;
+            comboBox_algorithm.SelectedText = "BSW";
         }
 
         private void button_selectFolder_Click(object sender, EventArgs e)
