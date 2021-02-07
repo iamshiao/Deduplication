@@ -35,6 +35,7 @@
             this.button_run = new System.Windows.Forms.Button();
             this.dataGridView_storedFiles = new System.Windows.Forms.DataGridView();
             this.folderBrowserDialog_srcPath = new System.Windows.Forms.FolderBrowserDialog();
+            this.saveFileDialog_reassemblyTo = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_storedFiles)).BeginInit();
             this.SuspendLayout();
             // 
@@ -92,6 +93,7 @@
             this.dataGridView_storedFiles.RowTemplate.Height = 27;
             this.dataGridView_storedFiles.Size = new System.Drawing.Size(776, 300);
             this.dataGridView_storedFiles.TabIndex = 5;
+            this.dataGridView_storedFiles.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_storedFiles_CellClick);
             // 
             // Form_deduplication
             // 
@@ -121,6 +123,7 @@
         private System.Windows.Forms.Button button_run;
         private System.Windows.Forms.DataGridView dataGridView_storedFiles;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog_srcPath;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog_reassemblyTo;
     }
 }
 

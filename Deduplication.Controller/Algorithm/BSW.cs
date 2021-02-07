@@ -35,7 +35,7 @@ namespace Deduplication.Controller.Algorithm
                     var f = piece.GetHashCode();
                     if (f % D == R || padding == bytes.Length)
                     {
-                        var chunk = new Chunk(f.ToString(), piece.Length);
+                        var chunk = new Chunk(f.ToString(), piece.Length, boundary);
                         chunks.Add(chunk);
                         UpdateChunkingProgress("Current break point", boundary);
 

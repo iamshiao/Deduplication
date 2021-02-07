@@ -5,13 +5,10 @@ using Deduplication.Model.DAL;
 using Deduplication.Model.DTO;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
-using System.IO.MemoryMappedFiles;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -20,6 +17,7 @@ namespace Deduplication.View
     public partial class Form_deduplication : Form
     {
         ProgressForm _progressforms = new ProgressForm();
+        IStorage _storage = new MemoryStorage();
 
         public Form_deduplication()
         {
@@ -71,13 +69,12 @@ namespace Deduplication.View
 
 
             var algSelected = comboBox_algorithm.Text;
-            var storage = new MemoryStorage();
 
             _progressforms.Show();
             ClearProgress();
-            DeduplicateController deduCtrl = new DeduplicateController(algSelected, storage, _progressforms.UpdateProgress);
+            DeduplicateController deduCtrl = new DeduplicateController(algSelected, _storage, _progressforms.UpdateProgress);
             await Task.Run(() => { deduCtrl.ImportFiles(fileViewModels); });
-            var storedFiles = storage.GetAllFileViewModels().ToList();
+            var storedFiles = _storage.GetAllFileViewModels().ToList();
             var fvmGridSrc = storedFiles.Select(fvm => new
             {
                 Name = fvm.Name,
@@ -86,11 +83,6 @@ namespace Deduplication.View
                 ProcessTime = $"{fvm.ProcessTime:hh\\:mm\\:ss\\:ms}"
             }).ToList();
             dataGridView_storedFiles.DataSource = fvmGridSrc;
-
-            for (int i = 0; i < dataGridView_storedFiles.Rows.Count; i++)
-            {
-                dataGridView_storedFiles.Rows[i].Tag = storedFiles[i].Chunks.ToList();
-            }
         }
 
         private void ClearProgress()
@@ -108,18 +100,36 @@ namespace Deduplication.View
             _progressforms.UpdateProgress(tmp, "chunks");
         }
 
-        //private void ReAssembly(string outputFullPath, List<Chunk> chunks)
-        //{
-        //    Queue<byte> bytes = new Queue<byte>();
-        //    foreach (var c in chunks)
-        //    {
-        //        foreach (var b in c.Bytes)
-        //        {
-        //            bytes.Enqueue(b);
-        //        }
-        //    }
+        private void dataGridView_storedFiles_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == dataGridView_storedFiles.Columns[""].Index && (sender as DataGridView).DataSource != null)
+            {
+                var fileName = (string)dataGridView_storedFiles.Rows[e.RowIndex].Cells["Name"].Value;
 
-        //    File.WriteAllBytes(outputFullPath, bytes.ToArray());
-        //}
+                var fvm = _storage.GetAllFileViewModels().FirstOrDefault(x => x.Name == fileName);
+                saveFileDialog_reassemblyTo.InitialDirectory = folderBrowserDialog_srcPath.SelectedPath;
+                saveFileDialog_reassemblyTo.FileName = fileName;
+                if (saveFileDialog_reassemblyTo.ShowDialog() == DialogResult.OK &&
+                    !string.IsNullOrWhiteSpace(saveFileDialog_reassemblyTo.FileName))
+                {
+                    Reassembly(saveFileDialog_reassemblyTo.FileName, fvm);
+                }
+            }
+        }
+
+        private void Reassembly(string outputFullPath, FileViewModel fvm)
+        {
+            int outset = 0;
+            List<byte> bytes = new List<byte>();
+            foreach (var chunk in fvm.Chunks)
+            {
+                var piece = fvm.Bytes.SubArray(outset, (int)chunk.Length);
+                bytes.AddRange(piece);
+
+                outset = (int)chunk.Offset + 1;
+            }
+
+            File.WriteAllBytes(outputFullPath, bytes.ToArray());
+        }
     }
 }

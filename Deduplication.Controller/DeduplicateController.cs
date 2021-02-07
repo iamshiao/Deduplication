@@ -48,7 +48,14 @@ namespace Deduplication.Controller
             var chunks = _algorithm.Chunk(fvmi.Bytes);
             sw.Stop();
             _storage.AddChunks(chunks);
-            FileViewModel fvmo = new FileViewModel(fvmi.Name, fvmi.Bytes.Length, chunks, sw.Elapsed.Duration());
+            FileViewModel fvmo = new FileViewModel()
+            {
+                Name = fvmi.Name,
+                Size = fvmi.Bytes.Length,
+                Chunks = chunks,
+                ProcessTime = sw.Elapsed.Duration(),
+                Bytes = fvmi.Bytes
+            };
             _storage.AddFileViewModel(fvmo);
         }
 

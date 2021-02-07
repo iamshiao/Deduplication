@@ -13,14 +13,6 @@ namespace Deduplication.Model.DTO
 
         }
 
-        public FileViewModel(string name, int size, IEnumerable<Chunk> chunks, TimeSpan processTime)
-        {
-            Name = name;
-            Size = size;
-            Chunks = chunks;
-            ProcessTime = processTime;
-        }
-
         public string Name { get; set; }
         public byte[] Bytes { get; set; }
         public int Size { get; set; }
