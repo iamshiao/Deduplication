@@ -24,6 +24,7 @@ namespace Deduplication.View
             InitializeComponent();
             InitAlgorithmCombobox();
             InitReassemblyBtnColumnToGrid();
+            InitStorageCombobox();
         }
 
         private void InitAlgorithmCombobox()
@@ -34,6 +35,16 @@ namespace Deduplication.View
             var comboboxDataSrc = algorithmClasses.Select(c => c.Name).ToList();
             comboBox_algorithm.DataSource = comboboxDataSrc;
             comboBox_algorithm.SelectedText = "BSW";
+        }
+
+        private void InitStorageCombobox()
+        {
+            var theInterface = typeof(IStorage);
+            var storageClasses = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a => a.GetTypes()).Where(t => theInterface.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+            var comboboxDataSrc = storageClasses.Select(c => c.Name).ToList();
+            comboBox_storage.DataSource = comboboxDataSrc;
+            comboBox_storage.SelectedText = "MemoryStorage";
         }
 
         private void InitReassemblyBtnColumnToGrid()

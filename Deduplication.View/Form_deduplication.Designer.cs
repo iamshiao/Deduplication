@@ -36,6 +36,9 @@
             this.dataGridView_storedFiles = new System.Windows.Forms.DataGridView();
             this.folderBrowserDialog_srcPath = new System.Windows.Forms.FolderBrowserDialog();
             this.saveFileDialog_reassemblyTo = new System.Windows.Forms.SaveFileDialog();
+            this.label_storage = new System.Windows.Forms.Label();
+            this.comboBox_storage = new System.Windows.Forms.ComboBox();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_storedFiles)).BeginInit();
             this.SuspendLayout();
             // 
@@ -67,7 +70,7 @@
             // label_algorithm
             // 
             this.label_algorithm.AutoSize = true;
-            this.label_algorithm.Location = new System.Drawing.Point(21, 21);
+            this.label_algorithm.Location = new System.Drawing.Point(20, 24);
             this.label_algorithm.Name = "label_algorithm";
             this.label_algorithm.Size = new System.Drawing.Size(67, 17);
             this.label_algorithm.TabIndex = 3;
@@ -95,11 +98,30 @@
             this.dataGridView_storedFiles.TabIndex = 5;
             this.dataGridView_storedFiles.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_storedFiles_CellClick);
             // 
+            // label_storage
+            // 
+            this.label_storage.AutoSize = true;
+            this.label_storage.Location = new System.Drawing.Point(323, 24);
+            this.label_storage.Name = "label_storage";
+            this.label_storage.Size = new System.Drawing.Size(58, 17);
+            this.label_storage.TabIndex = 7;
+            this.label_storage.Text = "Storage";
+            // 
+            // comboBox_storage
+            // 
+            this.comboBox_storage.FormattingEnabled = true;
+            this.comboBox_storage.Location = new System.Drawing.Point(387, 21);
+            this.comboBox_storage.Name = "comboBox_storage";
+            this.comboBox_storage.Size = new System.Drawing.Size(200, 24);
+            this.comboBox_storage.TabIndex = 6;
+            // 
             // Form_deduplication
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 404);
+            this.Controls.Add(this.label_storage);
+            this.Controls.Add(this.comboBox_storage);
             this.Controls.Add(this.dataGridView_storedFiles);
             this.Controls.Add(this.button_run);
             this.Controls.Add(this.label_algorithm);
@@ -124,6 +146,9 @@
         private System.Windows.Forms.DataGridView dataGridView_storedFiles;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog_srcPath;
         private System.Windows.Forms.SaveFileDialog saveFileDialog_reassemblyTo;
+        private System.Windows.Forms.Label label_storage;
+        private System.Windows.Forms.ComboBox comboBox_storage;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }
 
