@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
+using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace Deduplication.View
         {
             InitializeComponent();
             InitAlgorithmCombobox();
+            InitReassemblyBtnColumnToGrid();
         }
 
         private void InitAlgorithmCombobox()
@@ -34,6 +36,19 @@ namespace Deduplication.View
             var comboboxDataSrc = algorithmClasses.Select(c => c.Name).ToList();
             comboBox_algorithm.DataSource = comboboxDataSrc;
             comboBox_algorithm.SelectedText = "BSW";
+        }
+
+        private void InitReassemblyBtnColumnToGrid()
+        {
+            DataGridViewButtonColumn reassemblyBtnCol = new DataGridViewButtonColumn();
+            reassemblyBtnCol.Name = "";
+            reassemblyBtnCol.Text = "Reassembly";
+            reassemblyBtnCol.UseColumnTextForButtonValue = true;
+            int columnIndex = 0;
+            if (dataGridView_storedFiles.Columns["reassemblyBtnCol"] == null)
+            {
+                dataGridView_storedFiles.Columns.Insert(columnIndex, reassemblyBtnCol);
+            }
         }
 
         private void button_selectFolder_Click(object sender, EventArgs e)
@@ -92,5 +107,19 @@ namespace Deduplication.View
             _progressforms.UpdateProgress(tmp, "bytes");
             _progressforms.UpdateProgress(tmp, "chunks");
         }
+
+        //private void ReAssembly(string outputFullPath, List<Chunk> chunks)
+        //{
+        //    Queue<byte> bytes = new Queue<byte>();
+        //    foreach (var c in chunks)
+        //    {
+        //        foreach (var b in c.Bytes)
+        //        {
+        //            bytes.Enqueue(b);
+        //        }
+        //    }
+
+        //    File.WriteAllBytes(outputFullPath, bytes.ToArray());
+        //}
     }
 }
