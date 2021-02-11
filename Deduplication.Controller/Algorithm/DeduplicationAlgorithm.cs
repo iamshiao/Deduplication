@@ -1,4 +1,5 @@
-﻿using Deduplication.Model.DTO;
+﻿using Deduplication.Controller.Extension;
+using Deduplication.Model.DTO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -54,16 +55,8 @@ namespace Deduplication.Controller.Algorithm
 
         protected int GetHashCode(byte[] bytes)
         {
-            unchecked
-            {
-                int hash = (int)2166136261;
-                foreach (var b in bytes)
-                {
-                    hash = (hash * 16777619) ^ b.GetHashCode();
-                }
-
-                return hash;
-            }
+            var comparer = new ArrayEqualityComparer<byte>();
+            return comparer.GetHashCode(bytes);
         }
 
         protected string GetSHA256Str(byte[] bytes)

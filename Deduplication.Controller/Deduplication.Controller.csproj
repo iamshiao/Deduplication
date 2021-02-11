@@ -45,6 +45,7 @@
     <Compile Include="Algorithm\DeduplicationAlgorithm.cs" />
     <Compile Include="Algorithm\IDeduplicationAlgorithm.cs" />
     <Compile Include="DeduplicateController.cs" />
+    <Compile Include="Extension\ArrayEqualityComparer.cs" />
     <Compile Include="Extension\GeneralExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
