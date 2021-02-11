@@ -61,11 +61,14 @@ namespace Deduplication.View
 
         private void button_selectFolder_Click(object sender, EventArgs e)
         {
+            folderBrowserDialog_srcPath.SelectedPath = Path.GetFullPath(Properties.Settings.Default.DefaultPath);
             if (folderBrowserDialog_srcPath.ShowDialog() == DialogResult.OK &&
                 !string.IsNullOrWhiteSpace(folderBrowserDialog_srcPath.SelectedPath))
             {
                 textBox_srcPath.Text = folderBrowserDialog_srcPath.SelectedPath;
             }
+            Properties.Settings.Default.DefaultPath = folderBrowserDialog_srcPath.SelectedPath;
+            Properties.Settings.Default.Save();
         }
 
         private async void button_run_Click(object sender, EventArgs e)
