@@ -52,20 +52,6 @@ namespace Deduplication.Controller.Algorithm
             });
         }
 
-        protected int GetHashCode(byte[] bytes)
-        {
-            unchecked
-            {
-                int hash = (int)2166136261;
-                foreach (var b in bytes)
-                {
-                    hash = (hash * 16777619) ^ b.GetHashCode();
-                }
-
-                return hash;
-            }
-        }
-
         protected string GetSHA256Str(byte[] bytes)
         {
             byte[] hashed;
