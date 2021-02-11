@@ -7,7 +7,6 @@ namespace Deduplication.Controller.Algorithm
 {
     internal class BSW : DeduplicationAlgorithm
     {
-
         public int D { get; set; }
         public int R { get; set; }
 
@@ -22,24 +21,29 @@ namespace Deduplication.Controller.Algorithm
 
         public override IEnumerable<Chunk> Chunk(byte[] bytes)
         {
+            var sha256Str = GetSHA256Str(bytes);
             HashSet<Chunk> chunks = new HashSet<Chunk>();
 
             UpdateChunkingProgress("Start chuncking", 0, bytes.Length);
-            for (int start = 0, boundary = 0; boundary < bytes.Length; boundary++)
+            for (long outset = 0, boundary = 0; boundary < bytes.Length; boundary++)
             {
                 var padding = boundary + 1;
-                var scope = padding - start;
+                var scope = padding - outset;
                 if (scope >= MinT || (scope > 0 && padding == bytes.Length))
                 {
-                    var piece = bytes.SubArray(start, scope);
+                    var piece = bytes.SubArray(outset, scope);
                     var f = piece.GetHashCode();
                     if (f % D == R || padding == bytes.Length)
                     {
-                        var chunk = new Chunk(f.ToString(), piece.Length, boundary);
+                        var chunk = new Chunk() {
+                            Id = f.ToString(),
+                            Bytes = piece
+                        };
+
                         chunks.Add(chunk);
                         UpdateChunkingProgress("Current break point", boundary);
 
-                        start = padding;
+                        outset = padding;
                     }
                 }
             }

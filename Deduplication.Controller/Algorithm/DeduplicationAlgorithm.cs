@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Deduplication.Controller.Algorithm
@@ -63,6 +64,17 @@ namespace Deduplication.Controller.Algorithm
 
                 return hash;
             }
+        }
+
+        protected string GetSHA256Str(byte[] bytes)
+        {
+            byte[] hashed;
+            using (var provider = new SHA256CryptoServiceProvider())
+            {
+                hashed = provider.ComputeHash(bytes);
+            }
+
+            return BitConverter.ToString(hashed).Replace("-", "");
         }
     }
 }

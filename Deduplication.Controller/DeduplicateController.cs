@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Deduplication.Controller
 {
@@ -40,39 +38,41 @@ namespace Deduplication.Controller
 
             _algorithm = alg;
         }
-
-        public void ImportFile(FileViewModel fvmi)
+        
+        public void ImportFile(FileInfo fi)
         {
+            var bytes = File.ReadAllBytes(fi.FullName);
+
             _algorithm.EnableProgress();
             var sw = Stopwatch.StartNew();
-            var chunks = _algorithm.Chunk(fvmi.Bytes);
+            var chunks = _algorithm.Chunk(bytes);
             sw.Stop();
             _storage.AddChunks(chunks);
             FileViewModel fvmo = new FileViewModel()
             {
-                Name = fvmi.Name,
-                Size = fvmi.Bytes.Length,
+                Name = fi.Name,
+                Size = fi.Length,
                 Chunks = chunks,
-                ProcessTime = sw.Elapsed.Duration(),
-                Bytes = fvmi.Bytes
+                ProcessTime = sw.Elapsed.Duration()
             };
             _storage.AddFileViewModel(fvmo);
         }
 
-        public void ImportFiles(IEnumerable<FileViewModel> fvmi)
+        public void ImportFiles(IEnumerable<FileInfo> fileInfos)
         {
-            int totalBytes = fvmi.Sum(s => s.Bytes.Length);
+            long totalBytes = fileInfos.Sum(fi => fi.Length);
             ReportBytesProgress(totalBytes, 0, "Init blobs import");
 
-            int totalBlobsCount = fvmi.Count();
+            int totalBlobsCount = fileInfos.Count();
             ReportFilesProgress(totalBlobsCount, 0, "Begin blobs import");
 
 
-            int processedBytes = 0, processedBlobsCount = 0;
-            foreach (var bm in fvmi)
+            long processedBytes = 0;
+            int processedBlobsCount = 0;
+            foreach (var fi in fileInfos)
             {
-                ImportFile(bm);
-                processedBytes += bm.Bytes.Length;
+                ImportFile(fi);
+                processedBytes += fi.Length;
                 ReportBytesProgress(totalBytes, processedBytes, "has processed bytes");
 
                 processedBlobsCount++;
@@ -80,7 +80,7 @@ namespace Deduplication.Controller
             }
         }
 
-        private void ReportFilesProgress(int total, int processed, string msg)
+        private void ReportFilesProgress(long total, long processed, string msg)
         {
             _fileProgress.Total = total;
             _fileProgress.Processed = processed;
@@ -88,7 +88,7 @@ namespace Deduplication.Controller
             _UpdateProgress(_fileProgress, "files");
         }
 
-        private void ReportBytesProgress(int total, int processed, string msg)
+        private void ReportBytesProgress(long total, long processed, string msg)
         {
             _bytesProgress.Total = total;
             _bytesProgress.Processed = processed;

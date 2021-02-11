@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DAL\IStorage.cs" />
+    <Compile Include="DAL\LocalStorage.cs" />
     <Compile Include="DAL\MemoryStorage.cs" />
     <Compile Include="DTO\Chunk.cs" />
     <Compile Include="DTO\FileViewModel.cs" />

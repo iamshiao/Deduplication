@@ -1,5 +1,6 @@
 ﻿using Deduplication.Model.DTO;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Deduplication.Model.DAL
 {
@@ -42,6 +43,17 @@ namespace Deduplication.Model.DAL
         public IEnumerable<Chunk> GetAllChunks()
         {
             return _chunks;
+        }
+
+        public void Reassembly(FileViewModel fileViewModel, string outputFullPath)
+        {
+            List<byte> bytes = new List<byte>();
+            foreach (var chunk in fileViewModel.Chunks)
+            {
+                bytes.AddRange(chunk.Bytes);
+            }
+
+            File.WriteAllBytes(outputFullPath, bytes.ToArray());
         }
     }
 }

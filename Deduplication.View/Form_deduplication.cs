@@ -4,7 +4,6 @@ using Deduplication.Controller.Extensions;
 using Deduplication.Model.DAL;
 using Deduplication.Model.DTO;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -17,7 +16,7 @@ namespace Deduplication.View
     public partial class Form_deduplication : Form
     {
         ProgressForm _progressforms = new ProgressForm();
-        IStorage _storage = new MemoryStorage();
+        IStorage _storage;
 
         public Form_deduplication()
         {
@@ -72,19 +71,20 @@ namespace Deduplication.View
         private async void button_run_Click(object sender, EventArgs e)
         {
             var filePaths = Directory.GetFiles(textBox_srcPath.Text, "*.*", SearchOption.TopDirectoryOnly);
-            var fileViewModels = filePaths.Select(path => new FileViewModel()
-            {
-                Name = Path.GetFileName(path),
-                Bytes = File.ReadAllBytes(path)
-            });
+            var fileInfos = filePaths.Select(path => new FileInfo(path));
 
 
             var algSelected = comboBox_algorithm.Text;
+            if (comboBox_storage.Text == "MemoryStorage")
+                _storage = new MemoryStorage();
+            else if (comboBox_storage.Text == "LocalStorage")
+                _storage = new LocalStorage(algSelected);
+
 
             _progressforms.Show();
             ClearProgress();
             DeduplicateController deduCtrl = new DeduplicateController(algSelected, _storage, _progressforms.UpdateProgress);
-            await Task.Run(() => { deduCtrl.ImportFiles(fileViewModels); });
+            await Task.Run(() => { deduCtrl.ImportFiles(fileInfos); });
             var storedFiles = _storage.GetAllFileViewModels().ToList();
             var fvmGridSrc = storedFiles.Select(fvm => new
             {
@@ -123,24 +123,9 @@ namespace Deduplication.View
                 if (saveFileDialog_reassemblyTo.ShowDialog() == DialogResult.OK &&
                     !string.IsNullOrWhiteSpace(saveFileDialog_reassemblyTo.FileName))
                 {
-                    Reassembly(saveFileDialog_reassemblyTo.FileName, fvm);
+                    _storage.Reassembly(fvm, saveFileDialog_reassemblyTo.FileName);
                 }
             }
-        }
-
-        private void Reassembly(string outputFullPath, FileViewModel fvm)
-        {
-            int outset = 0;
-            List<byte> bytes = new List<byte>();
-            foreach (var chunk in fvm.Chunks)
-            {
-                var piece = fvm.Bytes.SubArray(outset, (int)chunk.Length);
-                bytes.AddRange(piece);
-
-                outset = (int)chunk.Offset + 1;
-            }
-
-            File.WriteAllBytes(outputFullPath, bytes.ToArray());
         }
     }
 }

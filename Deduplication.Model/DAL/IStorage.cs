@@ -15,10 +15,12 @@ namespace Deduplication.Model.DAL
 
         IEnumerable<Chunk> GetAllChunks();
 
-        void AddFileViewModel(FileViewModel fileViewModels);
+        void AddFileViewModel(FileViewModel fileViewModel);
 
         void AddFileViewModels(IEnumerable<FileViewModel> fileViewModels);
 
         IEnumerable<FileViewModel> GetAllFileViewModels();
+
+        void Reassembly(FileViewModel fileViewModel, string outputFullPath);
     }
 }
