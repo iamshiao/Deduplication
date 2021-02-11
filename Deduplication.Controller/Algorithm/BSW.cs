@@ -36,7 +36,7 @@ namespace Deduplication.Controller.Algorithm
                     if (f % D == R || padding == bytes.Length)
                     {
                         var chunk = new Chunk() {
-                            Id = f.ToString(),
+                            Id = GetSHA256Str(piece),
                             Bytes = piece
                         };
 
