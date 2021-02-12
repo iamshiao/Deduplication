@@ -38,7 +38,6 @@
             this.saveFileDialog_reassemblyTo = new System.Windows.Forms.SaveFileDialog();
             this.label_storage = new System.Windows.Forms.Label();
             this.comboBox_storage = new System.Windows.Forms.ComboBox();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_storedFiles)).BeginInit();
             this.SuspendLayout();
             // 
@@ -148,7 +147,6 @@
         private System.Windows.Forms.SaveFileDialog saveFileDialog_reassemblyTo;
         private System.Windows.Forms.Label label_storage;
         private System.Windows.Forms.ComboBox comboBox_storage;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }
 

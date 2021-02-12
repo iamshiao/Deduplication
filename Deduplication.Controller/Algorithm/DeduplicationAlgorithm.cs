@@ -32,6 +32,7 @@ namespace Deduplication.Controller.Algorithm
 
         public void EnableProgress()
         {
+            ProgressInfo = new ProgressInfo();
             Task.Run(async () =>
             {
                 using (System.Timers.Timer timer = new System.Timers.Timer())
@@ -40,30 +41,16 @@ namespace Deduplication.Controller.Algorithm
                     {
                         UpdateProgress?.Invoke(ProgressInfo, "chunks");
                     });
-                    timer.Interval = 1000;
+                    timer.Interval = 500;
                     timer.Enabled = true;
 
                     while (ProgressInfo.Total != ProgressInfo.Processed)
                     {
-                        await Task.Delay(TimeSpan.FromMilliseconds(1000));
+                        await Task.Delay(TimeSpan.FromMilliseconds(300));
                     }
                     UpdateProgress?.Invoke(ProgressInfo, "chunks");
                 }
             });
-        }
-
-        protected int GetHashCode(byte[] bytes)
-        {
-            unchecked
-            {
-                int hash = (int)2166136261;
-                foreach (var b in bytes)
-                {
-                    hash = (hash * 16777619) ^ b.GetHashCode();
-                }
-
-                return hash;
-            }
         }
 
         protected string GetSHA256Str(byte[] bytes)

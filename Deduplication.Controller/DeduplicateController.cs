@@ -66,7 +66,6 @@ namespace Deduplication.Controller
             int totalBlobsCount = fileInfos.Count();
             ReportFilesProgress(totalBlobsCount, 0, "Begin blobs import");
 
-
             long processedBytes = 0;
             int processedBlobsCount = 0;
             foreach (var fi in fileInfos)
