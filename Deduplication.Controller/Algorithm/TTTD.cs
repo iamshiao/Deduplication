@@ -8,6 +8,7 @@ namespace Deduplication.Controller.Algorithm
     internal class TTTD : DeduplicationAlgorithm
     {
         private readonly int _mainD, _secondD, _minT, _maxT;
+        List<int> _breakPoints = new List<int>();
 
         public TTTD(int mainD, int secondD, int minT, int maxT, Action<ProgressInfo, string> updateProgress = null)
            : base(updateProgress)
@@ -59,8 +60,7 @@ namespace Deduplication.Controller.Algorithm
 
             return chunks;
         }
-
-        List<int> _breakPoints = new List<int>();
+        
         private void AddBreakPoint(int breakPoint)
         {
             _breakPoints.Add(breakPoint);
@@ -72,7 +72,7 @@ namespace Deduplication.Controller.Algorithm
         /// <param name="bytes">bytes of the file</param>
         private void Compute(byte[] bytes)
         {
-            List<int> _breakPoints = new List<int>();
+            _breakPoints = new List<int>();
 
             int currP = 0, lastP = 0, backupBreak = 0;
             for (; currP < bytes.Length; currP++)
