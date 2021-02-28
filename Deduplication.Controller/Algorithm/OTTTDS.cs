@@ -71,6 +71,7 @@ namespace Deduplication.Controller.Algorithm
                 };
                 chunks.Add(chunk);
             }
+            UpdateChunkingProgress("Finished", bytes.Length, bytes.Length);
 
             return chunks;
         }

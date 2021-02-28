@@ -32,7 +32,6 @@ namespace Deduplication.Controller.Algorithm
 
         public void EnableProgress()
         {
-            ProgressInfo = new ProgressInfo();
             Task.Run(async () =>
             {
                 using (System.Timers.Timer timer = new System.Timers.Timer())
