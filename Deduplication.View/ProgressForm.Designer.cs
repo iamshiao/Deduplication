@@ -177,9 +177,9 @@
             this.label_chunks.Location = new System.Drawing.Point(12, 198);
             this.label_chunks.MaximumSize = new System.Drawing.Size(465, 0);
             this.label_chunks.Name = "label_chunks";
-            this.label_chunks.Size = new System.Drawing.Size(55, 17);
+            this.label_chunks.Size = new System.Drawing.Size(67, 17);
             this.label_chunks.TabIndex = 20;
-            this.label_chunks.Text = "Chunks";
+            this.label_chunks.Text = "Chunking";
             // 
             // progressBar_chunks
             // 
@@ -223,9 +223,9 @@
             this.label_store.Location = new System.Drawing.Point(12, 293);
             this.label_store.MaximumSize = new System.Drawing.Size(465, 0);
             this.label_store.Name = "label_store";
-            this.label_store.Size = new System.Drawing.Size(42, 17);
+            this.label_store.Size = new System.Drawing.Size(102, 17);
             this.label_store.TabIndex = 25;
-            this.label_store.Text = "Store";
+            this.label_store.Text = "Storing chunks";
             // 
             // progressBar_store
             // 

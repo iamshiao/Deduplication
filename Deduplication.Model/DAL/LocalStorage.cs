@@ -1,7 +1,9 @@
 ﻿using Deduplication.Model.DTO;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Deduplication.Model.DAL
 {
@@ -10,11 +12,16 @@ namespace Deduplication.Model.DAL
         private readonly string _localStoragePath;
         private readonly List<FileViewModel> _fileViewModels;
 
-        public LocalStorage(string algorithm)
+        protected ProgressInfo ProgressInfo { get; set; }
+        protected Action<ProgressInfo, string> UpdateProgress { get; set; }
+
+        public LocalStorage(string algorithm, Action<ProgressInfo, string> updateProgress = null)
         {
             _localStoragePath = $@"{Path.GetTempPath()}/chunkstore/{algorithm}";
             Directory.CreateDirectory(_localStoragePath);
             _fileViewModels = new List<FileViewModel>();
+
+            UpdateProgress = updateProgress;
         }
 
         public void AddFileViewModel(FileViewModel fileViewModel)
@@ -29,6 +36,12 @@ namespace Deduplication.Model.DAL
 
         public void AddChunk(Chunk chunk)
         {
+            ProgressInfo = new ProgressInfo()
+            {
+                Message = "has processed bytes",
+                Processed = ProgressInfo.Processed + chunk.Bytes.Length,
+                Total = ProgressInfo.Total
+            };
             File.WriteAllBytes($@"{_localStoragePath}\{chunk.Id}.chk", chunk.Bytes);
         }
 
@@ -72,6 +85,30 @@ namespace Deduplication.Model.DAL
         private byte[] GetBytesFromChunk(Chunk chunk)
         {
             return File.ReadAllBytes($@"{_localStoragePath}\{chunk.Id}.chk");
+        }
+
+        public void EnableProgress(ProgressInfo pi)
+        {
+            ProgressInfo = pi;
+
+            Task.Run(async () =>
+            {
+                using (System.Timers.Timer timer = new System.Timers.Timer())
+                {
+                    timer.Elapsed += new System.Timers.ElapsedEventHandler((source, e) =>
+                    {
+                        UpdateProgress?.Invoke(ProgressInfo, "store");
+                    });
+                    timer.Interval = 500;
+                    timer.Enabled = true;
+
+                    while (ProgressInfo.Total != ProgressInfo.Processed)
+                    {
+                        await Task.Delay(TimeSpan.FromMilliseconds(300));
+                    }
+                    UpdateProgress?.Invoke(ProgressInfo, "store");
+                }
+            });
         }
     }
 }
