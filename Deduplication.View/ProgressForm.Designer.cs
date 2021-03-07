@@ -43,6 +43,11 @@
             this.label_percentage_chunks = new System.Windows.Forms.Label();
             this.label_chunks = new System.Windows.Forms.Label();
             this.progressBar_chunks = new System.Windows.Forms.ProgressBar();
+            this.label_proportion_store = new System.Windows.Forms.Label();
+            this.label_msg_store = new System.Windows.Forms.Label();
+            this.label_percentage_store = new System.Windows.Forms.Label();
+            this.label_store = new System.Windows.Forms.Label();
+            this.progressBar_store = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // label_percentage_files
@@ -172,9 +177,9 @@
             this.label_chunks.Location = new System.Drawing.Point(12, 198);
             this.label_chunks.MaximumSize = new System.Drawing.Size(465, 0);
             this.label_chunks.Name = "label_chunks";
-            this.label_chunks.Size = new System.Drawing.Size(55, 17);
+            this.label_chunks.Size = new System.Drawing.Size(67, 17);
             this.label_chunks.TabIndex = 20;
-            this.label_chunks.Text = "Chunks";
+            this.label_chunks.Text = "Chunking";
             // 
             // progressBar_chunks
             // 
@@ -183,11 +188,62 @@
             this.progressBar_chunks.Size = new System.Drawing.Size(744, 25);
             this.progressBar_chunks.TabIndex = 19;
             // 
+            // label_proportion_store
+            // 
+            this.label_proportion_store.AutoSize = true;
+            this.label_proportion_store.Location = new System.Drawing.Point(12, 341);
+            this.label_proportion_store.MaximumSize = new System.Drawing.Size(465, 0);
+            this.label_proportion_store.Name = "label_proportion_store";
+            this.label_proportion_store.Size = new System.Drawing.Size(28, 17);
+            this.label_proportion_store.TabIndex = 28;
+            this.label_proportion_store.Text = "0/1";
+            // 
+            // label_msg_store
+            // 
+            this.label_msg_store.AutoSize = true;
+            this.label_msg_store.Location = new System.Drawing.Point(238, 341);
+            this.label_msg_store.MaximumSize = new System.Drawing.Size(465, 0);
+            this.label_msg_store.Name = "label_msg_store";
+            this.label_msg_store.Size = new System.Drawing.Size(65, 17);
+            this.label_msg_store.TabIndex = 27;
+            this.label_msg_store.Text = "message";
+            // 
+            // label_percentage_store
+            // 
+            this.label_percentage_store.AutoSize = true;
+            this.label_percentage_store.Location = new System.Drawing.Point(708, 341);
+            this.label_percentage_store.Name = "label_percentage_store";
+            this.label_percentage_store.Size = new System.Drawing.Size(32, 17);
+            this.label_percentage_store.TabIndex = 26;
+            this.label_percentage_store.Text = "0 %";
+            // 
+            // label_store
+            // 
+            this.label_store.AutoSize = true;
+            this.label_store.Location = new System.Drawing.Point(12, 293);
+            this.label_store.MaximumSize = new System.Drawing.Size(465, 0);
+            this.label_store.Name = "label_store";
+            this.label_store.Size = new System.Drawing.Size(102, 17);
+            this.label_store.TabIndex = 25;
+            this.label_store.Text = "Storing chunks";
+            // 
+            // progressBar_store
+            // 
+            this.progressBar_store.Location = new System.Drawing.Point(12, 313);
+            this.progressBar_store.Name = "progressBar_store";
+            this.progressBar_store.Size = new System.Drawing.Size(744, 25);
+            this.progressBar_store.TabIndex = 24;
+            // 
             // ProgressForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(768, 326);
+            this.ClientSize = new System.Drawing.Size(768, 391);
+            this.Controls.Add(this.label_proportion_store);
+            this.Controls.Add(this.label_msg_store);
+            this.Controls.Add(this.label_percentage_store);
+            this.Controls.Add(this.label_store);
+            this.Controls.Add(this.progressBar_store);
             this.Controls.Add(this.label_proportion_chunks);
             this.Controls.Add(this.label_msg_chunks);
             this.Controls.Add(this.label_percentage_chunks);
@@ -228,5 +284,10 @@
         private System.Windows.Forms.Label label_percentage_chunks;
         private System.Windows.Forms.Label label_chunks;
         private System.Windows.Forms.ProgressBar progressBar_chunks;
+        private System.Windows.Forms.Label label_proportion_store;
+        private System.Windows.Forms.Label label_msg_store;
+        private System.Windows.Forms.Label label_percentage_store;
+        private System.Windows.Forms.Label label_store;
+        private System.Windows.Forms.ProgressBar progressBar_store;
     }
 }

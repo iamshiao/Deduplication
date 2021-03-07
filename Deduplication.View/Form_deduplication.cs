@@ -76,16 +76,17 @@ namespace Deduplication.View
             var filePaths = Directory.GetFiles(textBox_srcPath.Text, "*.*", SearchOption.TopDirectoryOnly);
             var fileInfos = filePaths.Select(path => new FileInfo(path));
 
+            _progressforms.Show();
+            ClearProgress();
 
             var algSelected = comboBox_algorithm.Text;
             if (comboBox_storage.Text == "MemoryStorage")
                 _storage = new MemoryStorage();
             else if (comboBox_storage.Text == "LocalStorage")
-                _storage = new LocalStorage(algSelected);
+            {
+                _storage = new LocalStorage(algSelected, _progressforms.UpdateProgress);
+            }
 
-
-            _progressforms.Show();
-            ClearProgress();
             DeduplicateController deduCtrl = new DeduplicateController(algSelected, _storage, _progressforms.UpdateProgress);
             await Task.Run(() => { deduCtrl.ImportFiles(fileInfos); });
             var storedFiles = _storage.GetAllFileViewModels().ToList();
