@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Deduplication.Controller
 {
@@ -47,12 +48,13 @@ namespace Deduplication.Controller
 
             _algorithm = alg;
         }
-        
+
         public void ImportFile(FileInfo fi)
         {
             var bytes = File.ReadAllBytes(fi.FullName);
 
             _algorithm.EnableProgress();
+
             var sw = Stopwatch.StartNew();
             var chunks = _algorithm.Chunk(bytes);
             sw.Stop();
@@ -74,6 +76,18 @@ namespace Deduplication.Controller
 
             int totalBlobsCount = fileInfos.Count();
             ReportFilesProgress(totalBlobsCount, 0, "Begin blobs import");
+
+
+            if (_storage is LocalStorage)
+            {
+                var ls = _storage as LocalStorage;
+                ls.EnableProgress(new ProgressInfo()
+                {
+                    Message = "",
+                    Total = totalBytes,
+                    Processed = 0
+                });
+            }
 
             long processedBytes = 0;
             int processedBlobsCount = 0;

@@ -10,6 +10,7 @@ namespace Deduplication.Controller.Algorithm
         private readonly int _minT, _maxT, _mainD, _secondD;
         private readonly int _switchP;
         private int _sMainD, _sSecondD;
+        List<int> _breakPoints = new List<int>();
 
         public OTTTDS(int mainD, int secondD, int minT, int maxT, int switchP, Action<ProgressInfo, string> updateProgress = null)
            : base(updateProgress)
@@ -70,11 +71,10 @@ namespace Deduplication.Controller.Algorithm
                 };
                 chunks.Add(chunk);
             }
+            UpdateChunkingProgress("Finished", bytes.Length, bytes.Length);
 
             return chunks;
         }
-
-        List<int> _breakPoints = new List<int>();
         private void AddBreakPoint(int breakPoint)
         {
             _breakPoints.Add(breakPoint);
@@ -100,7 +100,7 @@ namespace Deduplication.Controller.Algorithm
         /// <param name="bytes">bytes of the file</param>
         private void Compute(byte[] bytes)
         {
-            List<int> _breakPoints = new List<int>();
+            _breakPoints = new List<int>();
 
             int currP = 0, lastP = 0, backupBreak = 0;
             for (; currP < bytes.Length; currP++)
