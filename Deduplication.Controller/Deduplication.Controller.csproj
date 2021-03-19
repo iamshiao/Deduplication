@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\BFBC.cs" />
     <Compile Include="Algorithm\BSW.cs" />
     <Compile Include="Algorithm\DeduplicationAlgorithm.cs" />
     <Compile Include="Algorithm\IDeduplicationAlgorithm.cs" />
@@ -49,6 +50,7 @@
     <Compile Include="Algorithm\TTTD.cs" />
     <Compile Include="DeduplicateController.cs" />
     <Compile Include="Extension\GeneralExtension.cs" />
+    <Compile Include="HashAlgorithm\TripleHash.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

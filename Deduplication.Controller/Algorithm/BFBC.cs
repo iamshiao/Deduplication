@@ -2,11 +2,10 @@
 using Deduplication.Model.DTO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Deduplication.Controller.HashAlgorithm;
 
 namespace Deduplication.Controller.Algorithm
 {
-
     public class BFBC : DeduplicationAlgorithm
     {
         private readonly int _minT, _maxT;
@@ -21,12 +20,12 @@ namespace Deduplication.Controller.Algorithm
         {
             HashSet<Chunk> chunks = new HashSet<Chunk>();
 
-
+            TripleHash tripleHash = new TripleHash();
             UpdateChunkingProgress("Start chuncking", 0, bytes.Length);
 
             if (bytes.Length <= _minT)
             {
-                string chunkID = ComputeTripleHash(bytes);
+                string chunkID = tripleHash.ComputeTripleHash(bytes);
                 var chunk = new Chunk()
                 {
                     Id = chunkID,
@@ -43,7 +42,7 @@ namespace Deduplication.Controller.Algorithm
                 {
                     if (i + 2 == bytes.Length)
                     {
-                        string chunkID = ComputeTripleHash(bytes);
+                        string chunkID = tripleHash.ComputeTripleHash(bytes);
                         var chunk = new Chunk()
                         {
                             Id = chunkID,
@@ -58,7 +57,7 @@ namespace Deduplication.Controller.Algorithm
                         {
                             bp = i + 2;
                             var piece = bytes.SubArray(bp, bp - lastP);
-                            string chunkID = ComputeTripleHash(piece);
+                            string chunkID = tripleHash.ComputeTripleHash(piece);
                             var chunk = new Chunk()
                             {
                                 Id = chunkID,
@@ -78,11 +77,6 @@ namespace Deduplication.Controller.Algorithm
         private byte[] GetDivisorsByFrequency(byte[] bytes)
         {
             return new byte[] { 0, 1 };
-        }
-
-        private string ComputeTripleHash(byte[] bytes)
-        {
-            return bytes.GetHashCode().ToString();
         }
     }
 }
