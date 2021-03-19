@@ -2,6 +2,7 @@
 using Deduplication.Model.DTO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Deduplication.Controller.HashAlgorithm;
 
 namespace Deduplication.Controller.Algorithm
@@ -38,7 +39,7 @@ namespace Deduplication.Controller.Algorithm
             {
                 byte[] divisors = GetDivisorsByFrequency(bytes);
                 int lastP = 0, bp = 0;
-                for (int i=0; i<bytes.Length; ++i)
+                for (int i=0; i<bytes.Length; i++)
                 {
                     if (i + 2 == bytes.Length)
                     {
@@ -76,7 +77,31 @@ namespace Deduplication.Controller.Algorithm
 
         private byte[] GetDivisorsByFrequency(byte[] bytes)
         {
-            return new byte[] { 0, 1 };
+            string key;
+            Dictionary<string, long> counts = new Dictionary<string, long>(UInt16.MaxValue);
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                key = bytes[i].ToString("X2") + bytes[i + 1].ToString("X2");
+                if (counts.ContainsKey(key))
+                {
+                    counts[key]++;
+                }
+                else
+                {
+                    counts.Add(key, 1);
+                }
+            }
+            var sortedItems = from entry in counts orderby entry.Value descending select entry.Key;
+            string highest = sortedItems.FirstOrDefault();
+            byte[] highestTwoBytes = new byte[2];
+            for(int i=0; i<highest.Length; i++)
+            {
+                if(i % 2 == 0)
+                {
+                    highestTwoBytes[i / 2] = Convert.ToByte(highest.Substring(i, 2), 16);
+                }
+            }
+            return highestTwoBytes;
         }
     }
 }
