@@ -48,6 +48,7 @@
     <Compile Include="Algorithm\OTTTD.cs" />
     <Compile Include="Algorithm\TTTD.cs" />
     <Compile Include="DeduplicateController.cs" />
+    <Compile Include="Extension\ArrayEqualityComparer.cs" />
     <Compile Include="Extension\GeneralExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

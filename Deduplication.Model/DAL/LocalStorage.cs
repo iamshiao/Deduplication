@@ -42,7 +42,8 @@ namespace Deduplication.Model.DAL
                 Processed = ProgressInfo.Processed + chunk.Bytes.Length,
                 Total = ProgressInfo.Total
             };
-            File.WriteAllBytes($@"{_localStoragePath}\{chunk.Id}.chk", chunk.Bytes);
+            if (!File.Exists($@"{_localStoragePath}\{chunk.Id}.chk"))
+                File.WriteAllBytes($@"{_localStoragePath}\{chunk.Id}.chk", chunk.Bytes);
         }
 
         public void AddChunks(IEnumerable<Chunk> chunks)

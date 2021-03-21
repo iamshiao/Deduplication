@@ -1,4 +1,5 @@
-﻿using Deduplication.Model.DTO;
+﻿using Deduplication.Controller.Extension;
+using Deduplication.Model.DTO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +10,8 @@ namespace Deduplication.Controller.Algorithm
 {
     public abstract class DeduplicationAlgorithm : IDeduplicationAlgorithm
     {
+        protected readonly ArrayEqualityComparer<byte> _comparer = new ArrayEqualityComparer<byte>();
+
         protected ProgressInfo ProgressInfo { get; set; }
         protected Action<ProgressInfo, string> UpdateProgress { get; set; }
 

@@ -32,7 +32,7 @@ namespace Deduplication.Controller.Algorithm
                 if (scope >= MinT || (scope > 0 && padding == bytes.Length))
                 {
                     var piece = bytes.SubArray(outset, scope);
-                    var f = piece.GetHashCode();
+                    var f = _comparer.GetHashCode(piece);
                     if (f % D == R || padding == bytes.Length)
                     {
                         var chunk = new Chunk() {

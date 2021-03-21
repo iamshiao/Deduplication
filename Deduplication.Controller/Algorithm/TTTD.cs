@@ -31,7 +31,7 @@ namespace Deduplication.Controller.Algorithm
             foreach (var bp in _breakPoints)
             {
                 var piece = bytes.SubArray(lastP, bp - lastP);
-                var f = piece.GetHashCode();
+                var f = _comparer.GetHashCode(piece);
 
                 var chunk = new Chunk()
                 {
@@ -47,7 +47,7 @@ namespace Deduplication.Controller.Algorithm
             if (lastP < bytes.Length) // cover the last piece
             {
                 var piece = bytes.SubArray(lastP, bytes.Length - lastP);
-                var f = piece.GetHashCode();
+                var f = _comparer.GetHashCode(piece);
 
                 var chunk = new Chunk()
                 {
@@ -83,7 +83,7 @@ namespace Deduplication.Controller.Algorithm
                 }
 
                 var piece = bytes.SubArray(lastP, currP - lastP - 1);
-                var f = piece.GetHashCode();
+                var f = _comparer.GetHashCode(piece);
 
                 if ((int)f % _secondD == _secondD - 1)
                 {
