@@ -77,31 +77,40 @@ namespace Deduplication.Controller.Algorithm
 
         private byte[] GetDivisorsByFrequency(byte[] bytes)
         {
-            string key;
-            Dictionary<string, long> counts = new Dictionary<string, long>(UInt16.MaxValue);
-            for (int i = 0; i < bytes.Length; i++)
+            ushort index = 0;
+            long[] counts = new long[UInt16.MaxValue];
+            for (int i = 0; i + 1 < bytes.Length; i++)
             {
-                key = bytes[i].ToString("X2") + bytes[i + 1].ToString("X2");
-                if (counts.ContainsKey(key))
+                index = (ushort)((bytes[i] << 8) + bytes[i + 1]);
+                counts[index]++;
+            }
+            (int highestIndex, int secondIndex) indexes = DetermineTopTwoBytes(counts);
+
+            IEnumerable<byte> bytePair = BitConverter.GetBytes((ushort)indexes.highestIndex).Reverse();
+            return bytePair.ToArray();
+        }
+        private (int highestIndex, int secondHighestIndex) DetermineTopTwoBytes(long[] histogram)
+        {
+            (int index, long frequency) highest = (0, 0), second = (0, 0);
+            for (int i = 0; i < histogram.Length; i++)
+            {
+                if (histogram[i] > highest.frequency)
                 {
-                    counts[key]++;
+                    if (highest.index != i)
+                    {
+                        second.index = highest.index;
+                        second.frequency = highest.frequency;
+                    }
+                    highest.index = i;
+                    highest.frequency = histogram[i];
                 }
-                else
+                else if (histogram[i] > second.frequency && highest.index != i)
                 {
-                    counts.Add(key, 1);
+                    second.index = i;
+                    second.frequency = histogram[i];
                 }
             }
-            var sortedItems = from entry in counts orderby entry.Value descending select entry.Key;
-            string highest = sortedItems.FirstOrDefault();
-            byte[] highestTwoBytes = new byte[2];
-            for(int i=0; i<highest.Length; i++)
-            {
-                if(i % 2 == 0)
-                {
-                    highestTwoBytes[i / 2] = Convert.ToByte(highest.Substring(i, 2), 16);
-                }
-            }
-            return highestTwoBytes;
+            return (highest.index, second.index);
         }
     }
 }
