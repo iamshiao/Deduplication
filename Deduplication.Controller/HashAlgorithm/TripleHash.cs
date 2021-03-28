@@ -19,11 +19,11 @@ namespace Deduplication.Controller.HashAlgorithm
                 index++;
                 if (index > 202) index -= 202;
                 var tempHash1 = hash1 + (HF1[index] * b);
-                hash1 = tempHash1 > UInt16.MaxValue ? (UInt16)(tempHash1 & UInt16.MaxValue) : (UInt16)tempHash1;
+                hash1 = (UInt16)(tempHash1 & UInt16.MaxValue);
                 var tempHash2 = hash2 + (HF2[index] * b);
-                hash2 = tempHash2 > UInt16.MaxValue ? (UInt16)(tempHash2 & UInt16.MaxValue) : (UInt16)tempHash2;
+                hash2 = (UInt16)(tempHash2 & UInt16.MaxValue);
                 var tempHash3 = hash3 + (HF3[index] * b);
-                hash3 = tempHash3 > UInt16.MaxValue ? (UInt16)(tempHash3 & UInt16.MaxValue) : (UInt16)tempHash3;
+                hash3 = (UInt16)(tempHash3 & UInt16.MaxValue);
             }
             return ((long)hash1 * (long)hash2 * (long)hash3).ToString();
         }

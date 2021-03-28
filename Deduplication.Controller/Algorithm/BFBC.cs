@@ -38,26 +38,33 @@ namespace Deduplication.Controller.Algorithm
             else
             {
                 byte[] divisors = GetDivisorsByFrequency(bytes);
-                int lastP = 0, bp = 0;
-                for (int i=0; i<bytes.Length; i++)
+                int lastP = 0, bp = 0, length;
+                for (int i=0; i+2 <= bytes.Length; i++)
                 {
+                    bp = i + 2;
+                    length = bp - lastP;
                     if (i + 2 == bytes.Length)
                     {
-                        string chunkID = tripleHash.ComputeTripleHash(bytes);
+                        var piece = bytes.SubArray(lastP, length);
+                        string chunkID = tripleHash.ComputeTripleHash(piece);
                         var chunk = new Chunk()
                         {
                             Id = chunkID,
-                            Bytes = bytes
+                            Bytes = piece
                         };
                         chunks.Add(chunk);
                     }
                     else
                     {
-                        if (bytes[i] == divisors[0]
-                                && bytes[i + 1] == divisors[1])
+                        if(length < _minT)
                         {
-                            bp = i + 2;
-                            var piece = bytes.SubArray(bp, bp - lastP);
+                            continue;
+                        }
+                        if ((bytes[i] == divisors[0]
+                                && bytes[i + 1] == divisors[1])
+                                || length >= _maxT)
+                        {
+                            var piece = bytes.SubArray(lastP, length);
                             string chunkID = tripleHash.ComputeTripleHash(piece);
                             var chunk = new Chunk()
                             {
@@ -78,7 +85,7 @@ namespace Deduplication.Controller.Algorithm
         private byte[] GetDivisorsByFrequency(byte[] bytes)
         {
             ushort index = 0;
-            long[] counts = new long[UInt16.MaxValue];
+            long[] counts = new long[UInt16.MaxValue+1];
             for (int i = 0; i + 1 < bytes.Length; i++)
             {
                 index = (ushort)((bytes[i] << 8) + bytes[i + 1]);

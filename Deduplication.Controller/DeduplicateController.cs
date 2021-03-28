@@ -41,6 +41,9 @@ namespace Deduplication.Controller
                 case "OTTTDS":
                     alg = new OTTTDS(512, 256, 460, 2800, 1900, UpdateProgress);
                     break;
+                case "BFBC":
+                    alg = new BFBC(460, 2800, UpdateProgress);
+                    break;
                 default:
                     alg = new BSW(540, 539, 512, UpdateProgress);
                     break;
