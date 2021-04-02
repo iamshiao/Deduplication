@@ -1,3 +1,7 @@
+# We will continue the future development on Joseph's fork
+[Joseph's fork](https://github.com/joseph351619/Deduplication)
+This repository is archived for whoever tries to understand the basic implementation of BSW and TTTD series algorithms. We will enhance the code on Joseph's fork that shall provide better performance but perhaps also more complicated learning-wise compares to this version.
+
 # Deduplication
 Implementation of multiple deduplication algorithms in CSharp and demo with Winform application.
 
@@ -10,7 +14,7 @@ We have implemented the following algorithms
 
 To me, the **TTTD-S thesis** is the best to begin with if you want to know the process flow of the TTTD family series. We expand the code mainly based on the procedure code in that paper.
 
-You can find the implement in detail under `Deduplication.Controller.Algorithm`.
+You can find the implementation in detail under `Deduplication.Controller.Algorithm`.
 
 ## UI operation
 ![The winform looks like](https://i.imgur.com/vN5lb1x.jpg)
@@ -20,6 +24,6 @@ You can find the implement in detail under `Deduplication.Controller.Algorithm`.
 4. Click the Run button and you will see the progress form popup that will keep on reporting you dedu percentage.
 
 ## Code
-`DeduplicateController` controls the major workflow and you can adjust the alogorithm paramemters like minT, maxT, etc here too. 
+`DeduplicateController` controls the major workflow and you can adjust the algorithm parameters like minT, maxT, etc here too. 
 
 By reference to `Deduplication.Controller` and `Deduplication.Model` you can transplant the dedu core of this project and operate it through `DeduplicateController` instance in your own application.
