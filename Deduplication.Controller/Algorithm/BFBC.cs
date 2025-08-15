@@ -20,21 +20,25 @@ namespace Deduplication.Controller.Algorithm
 
         public override IEnumerable<Chunk> Chunk(Stream stream)
         {
-            // Convert Stream to byte[]
-            byte[] bytes;
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                bytes = memoryStream.ToArray();
-            }
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
+            if (!stream.CanRead)
+                throw new InvalidOperationException("Stream must be readable");
+            if (!stream.CanSeek)
+                throw new InvalidOperationException("Stream must support seeking for this algorithm");
 
             HashSet<Chunk> chunks = new HashSet<Chunk>();
-
             TripleHash tripleHash = new TripleHash();
-            UpdateChunkingProgress("Start chuncking", 0, bytes.Length);
+            
+            // Get stream length for progress tracking
+            long streamLength = stream.Length;
+            UpdateChunkingProgress("Start chunking", 0, streamLength);
 
-            if (bytes.Length <= _minT)
+            if (streamLength <= _minT)
             {
+                // For small streams, read all data and create single chunk
+                byte[] bytes = new byte[streamLength];
+                stream.Read(bytes, 0, (int)streamLength);
                 string chunkID = tripleHash.ComputeTripleHash(bytes);
                 var chunk = new Chunk()
                 {
@@ -42,19 +46,25 @@ namespace Deduplication.Controller.Algorithm
                     Bytes = bytes
                 };
                 chunks.Add(chunk);
-                UpdateChunkingProgress("Finished chunking", bytes.Length, bytes.Length);
+                UpdateChunkingProgress("Finished chunking", streamLength, streamLength);
             }
             else
             {
-                byte[] divisors = GetDivisorsByFrequency(bytes);
+                // For larger streams, process in chunks
+                byte[] divisors = GetDivisorsByFrequencyFromStream(stream);
+                stream.Position = 0; // Reset position after reading for divisors
+                
                 int lastP = 0, bp = 0, length;
-                for (int i=0; i+2 <= bytes.Length; i++)
+                byte[] buffer = new byte[2];
+                
+                for (int i = 0; i + 2 <= streamLength; i++)
                 {
                     bp = i + 2;
                     length = bp - lastP;
-                    if (i + 2 == bytes.Length)
+                    
+                    if (i + 2 == streamLength)
                     {
-                        var piece = bytes.SubArray(lastP, length);
+                        var piece = ReadStreamSegment(stream, lastP, length);
                         string chunkID = tripleHash.ComputeTripleHash(piece);
                         var chunk = new Chunk()
                         {
@@ -65,15 +75,18 @@ namespace Deduplication.Controller.Algorithm
                     }
                     else
                     {
-                        if(length < _minT)
+                        if (length < _minT)
                         {
                             continue;
                         }
-                        if ((bytes[i] == divisors[0]
-                                && bytes[i + 1] == divisors[1])
-                                || length >= _maxT)
+                        
+                        // Read current position bytes for comparison
+                        stream.Position = i;
+                        stream.Read(buffer, 0, 2);
+                        
+                        if ((buffer[0] == divisors[0] && buffer[1] == divisors[1]) || length >= _maxT)
                         {
-                            var piece = bytes.SubArray(lastP, length);
+                            var piece = ReadStreamSegment(stream, lastP, length);
                             string chunkID = tripleHash.ComputeTripleHash(piece);
                             var chunk = new Chunk()
                             {
@@ -82,26 +95,48 @@ namespace Deduplication.Controller.Algorithm
                             };
                             chunks.Add(chunk);
                             lastP = bp;
-                            UpdateChunkingProgress("Chunking", bp, bytes.Length);
+                            UpdateChunkingProgress("Chunking", bp, streamLength);
                         }
                     }
                 }
-                UpdateChunkingProgress("Finished chunking", bytes.Length, bytes.Length);
+                UpdateChunkingProgress("Finished chunking", streamLength, streamLength);
             }
             return chunks;
         }
 
-        private byte[] GetDivisorsByFrequency(byte[] bytes)
+        private byte[] ReadStreamSegment(Stream stream, int start, int length)
+        {
+            if (!stream.CanSeek)
+                throw new InvalidOperationException("Stream must support seeking for this algorithm");
+                
+            byte[] segment = new byte[length];
+            stream.Position = start;
+            int bytesRead = stream.Read(segment, 0, length);
+            
+            if (bytesRead < length)
+            {
+                // Resize array if we couldn't read the full length
+                Array.Resize(ref segment, bytesRead);
+            }
+            
+            return segment;
+        }
+
+        private byte[] GetDivisorsByFrequencyFromStream(Stream stream)
         {
             ushort index = 0;
-            long[] counts = new long[UInt16.MaxValue+1];
-            for (int i = 0; i + 1 < bytes.Length; i++)
+            long[] counts = new long[UInt16.MaxValue + 1];
+            byte[] buffer = new byte[2];
+            
+            for (int i = 0; i + 1 < stream.Length; i++)
             {
-                index = (ushort)((bytes[i] << 8) + bytes[i + 1]);
+                stream.Position = i;
+                stream.Read(buffer, 0, 2);
+                index = (ushort)((buffer[0] << 8) + buffer[1]);
                 counts[index]++;
             }
+            
             (int highestIndex, int secondIndex) indexes = DetermineTopTwoBytes(counts);
-
             IEnumerable<byte> bytePair = BitConverter.GetBytes((ushort)indexes.highestIndex).Reverse();
             return bytePair.ToArray();
         }

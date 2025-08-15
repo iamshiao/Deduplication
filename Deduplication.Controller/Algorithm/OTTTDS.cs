@@ -38,23 +38,16 @@ namespace Deduplication.Controller.Algorithm
 
         public override IEnumerable<Chunk> Chunk(Stream stream)
         {
-            // Convert Stream to byte[]
-            byte[] bytes;
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                bytes = memoryStream.ToArray();
-            }
-
             HashSet<Chunk> chunks = new HashSet<Chunk>();
+            long streamLength = stream.Length;
 
-            Compute(bytes);
+            ComputeFromStream(stream);
 
-            UpdateChunkingProgress("Start chuncking", 0, bytes.Length);
+            UpdateChunkingProgress("Start chunking", 0, streamLength);
             int lastP = 0;
             foreach (var bp in _breakPoints)
             {
-                var piece = bytes.SubArray(lastP, bp - lastP);
+                var piece = ReadStreamSegment(stream, lastP, bp - lastP);
                 var f = _comparer.GetHashCode(piece);
 
                 var chunk = new Chunk()
@@ -68,9 +61,9 @@ namespace Deduplication.Controller.Algorithm
                 lastP = bp;
             }
 
-            if (lastP < bytes.Length) // cover the last piece
+            if (lastP < streamLength) // cover the last piece
             {
-                var piece = bytes.SubArray(lastP, bytes.Length - lastP);
+                var piece = ReadStreamSegment(stream, lastP, (int)(streamLength - lastP));
                 var f = _comparer.GetHashCode(piece);
 
                 var chunk = new Chunk()
@@ -80,10 +73,29 @@ namespace Deduplication.Controller.Algorithm
                 };
                 chunks.Add(chunk);
             }
-            UpdateChunkingProgress("Finished", bytes.Length, bytes.Length);
+            UpdateChunkingProgress("Finished", streamLength, streamLength);
 
             return chunks;
         }
+
+        private byte[] ReadStreamSegment(Stream stream, int start, int length)
+        {
+            if (!stream.CanSeek)
+                throw new InvalidOperationException("Stream must support seeking for this algorithm");
+                
+            byte[] segment = new byte[length];
+            stream.Position = start;
+            int bytesRead = stream.Read(segment, 0, length);
+            
+            if (bytesRead < length)
+            {
+                // Resize array if we couldn't read the full length
+                Array.Resize(ref segment, bytesRead);
+            }
+            
+            return segment;
+        }
+
         private void AddBreakPoint(int breakPoint)
         {
             _breakPoints.Add(breakPoint);
@@ -106,20 +118,21 @@ namespace Deduplication.Controller.Algorithm
         /// <summary>
         /// Conduct the core algorithm 
         /// </summary>
-        /// <param name="bytes">bytes of the file</param>
-        private void Compute(byte[] bytes)
+        /// <param name="stream">stream of the file</param>
+        private void ComputeFromStream(Stream stream)
         {
             _breakPoints = new List<int>();
+            long streamLength = stream.Length;
 
             int currP = 0, lastP = 0, backupBreak = 0;
-            for (; currP < bytes.Length; currP++)
+            for (; currP < streamLength; currP++)
             {
                 if (currP - lastP < _minT)
                 {
                     continue;
                 }
 
-                var piece = bytes.SubArray(lastP, currP - lastP - 1);
+                var piece = ReadStreamSegment(stream, lastP, currP - lastP - 1);
                 var f = _comparer.GetHashCode(piece);
 
                 if (currP - lastP > _switchP)

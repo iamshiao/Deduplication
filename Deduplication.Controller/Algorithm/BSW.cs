@@ -22,26 +22,19 @@ namespace Deduplication.Controller.Algorithm
 
         public override IEnumerable<Chunk> Chunk(Stream stream)
         {
-            // Convert Stream to byte[]
-            byte[] bytes;
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                bytes = memoryStream.ToArray();
-            }
-
             HashSet<Chunk> chunks = new HashSet<Chunk>();
+            long streamLength = stream.Length;
 
-            UpdateChunkingProgress("Start chuncking", 0, bytes.Length);
-            for (long outset = 0, boundary = 0; boundary < bytes.Length; boundary++)
+            UpdateChunkingProgress("Start chunking", 0, streamLength);
+            for (long outset = 0, boundary = 0; boundary < streamLength; boundary++)
             {
                 var padding = boundary + 1;
                 var scope = padding - outset;
-                if (scope >= MinT || (scope > 0 && padding == bytes.Length))
+                if (scope >= MinT || (scope > 0 && padding == streamLength))
                 {
-                    var piece = bytes.SubArray(outset, scope);
+                    var piece = ReadStreamSegment(stream, (int)outset, (int)scope);
                     var f = _comparer.GetHashCode(piece);
-                    if (f % D == R || padding == bytes.Length)
+                    if (f % D == R || padding == streamLength)
                     {
                         var chunk = new Chunk() {
                             Id = GetSHA256Str(piece),
@@ -55,9 +48,27 @@ namespace Deduplication.Controller.Algorithm
                     }
                 }
             }
-            UpdateChunkingProgress("Finished", bytes.Length, bytes.Length);
+            UpdateChunkingProgress("Finished", streamLength, streamLength);
 
             return chunks;
+        }
+
+        private byte[] ReadStreamSegment(Stream stream, int start, int length)
+        {
+            if (!stream.CanSeek)
+                throw new InvalidOperationException("Stream must support seeking for this algorithm");
+                
+            byte[] segment = new byte[length];
+            stream.Position = start;
+            int bytesRead = stream.Read(segment, 0, length);
+            
+            if (bytesRead < length)
+            {
+                // Resize array if we couldn't read the full length
+                Array.Resize(ref segment, bytesRead);
+            }
+            
+            return segment;
         }
     }
 }
