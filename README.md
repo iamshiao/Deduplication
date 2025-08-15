@@ -1,7 +1,3 @@
-# We will continue the future development on Joseph's fork
-[Joseph's fork](https://github.com/joseph351619/Deduplication)
-This repository is archived for whoever tries to understand the basic implementation of BSW and TTTD series algorithms. We will enhance the code on Joseph's fork that shall provide better performance but perhaps also more complicated learning-wise compares to this version.
-
 # Deduplication
 Implementation of multiple deduplication algorithms in CSharp and demo with Winform application.
 
