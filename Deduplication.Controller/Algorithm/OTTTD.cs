@@ -2,6 +2,7 @@
 using Deduplication.Model.DTO;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Deduplication.Controller.Algorithm
 {
@@ -29,8 +30,16 @@ namespace Deduplication.Controller.Algorithm
             _maxT = maxT;
         }
 
-        public override IEnumerable<Chunk> Chunk(byte[] bytes)
+        public override IEnumerable<Chunk> Chunk(Stream stream)
         {
+            // Convert Stream to byte[]
+            byte[] bytes;
+            using (var memoryStream = new MemoryStream())
+            {
+                stream.CopyTo(memoryStream);
+                bytes = memoryStream.ToArray();
+            }
+
             HashSet<Chunk> chunks = new HashSet<Chunk>();
 
             Compute(bytes);

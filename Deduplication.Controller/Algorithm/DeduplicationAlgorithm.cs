@@ -21,7 +21,7 @@ namespace Deduplication.Controller.Algorithm
             UpdateProgress = updateProgress;
         }
 
-        public abstract IEnumerable<Chunk> Chunk(byte[] bytes);
+        public abstract IEnumerable<Chunk> Chunk(Stream stream);
 
         protected void UpdateChunkingProgress(string msg = null, long? processed = null, long? total = null)
         {

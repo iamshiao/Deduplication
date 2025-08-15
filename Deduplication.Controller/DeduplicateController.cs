@@ -54,22 +54,23 @@ namespace Deduplication.Controller
 
         public void ImportFile(FileInfo fi)
         {
-            var bytes = File.ReadAllBytes(fi.FullName);
-
-            _algorithm.EnableProgress();
-
-            var sw = Stopwatch.StartNew();
-            var chunks = _algorithm.Chunk(bytes);
-            sw.Stop();
-            _storage.AddChunks(chunks);
-            FileViewModel fvmo = new FileViewModel()
+            using (var fileStream = File.OpenRead(fi.FullName))
             {
-                Name = fi.Name,
-                Size = fi.Length,
-                Chunks = chunks,
-                ProcessTime = sw.Elapsed.Duration()
-            };
-            _storage.AddFileViewModel(fvmo);
+                _algorithm.EnableProgress();
+
+                var sw = Stopwatch.StartNew();
+                var chunks = _algorithm.Chunk(fileStream);
+                sw.Stop();
+                _storage.AddChunks(chunks);
+                FileViewModel fvmo = new FileViewModel()
+                {
+                    Name = fi.Name,
+                    Size = fi.Length,
+                    Chunks = chunks,
+                    ProcessTime = sw.Elapsed.Duration()
+                };
+                _storage.AddFileViewModel(fvmo);
+            }
         }
 
         public void ImportFiles(IEnumerable<FileInfo> fileInfos)
