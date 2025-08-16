@@ -22,5 +22,7 @@ namespace Deduplication.Model.DAL
         IEnumerable<FileViewModel> GetAllFileViewModels();
 
         void Reassembly(FileViewModel fileViewModel, string outputFullPath);
+        
+        void Reassembly(FileViewModel fileViewModel, string outputFullPath, Action<ProgressInfo, string> updateProgress);
     }
 }

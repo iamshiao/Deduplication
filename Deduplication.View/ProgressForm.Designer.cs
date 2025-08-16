@@ -48,6 +48,11 @@
             this.label_percentage_store = new System.Windows.Forms.Label();
             this.label_store = new System.Windows.Forms.Label();
             this.progressBar_store = new System.Windows.Forms.ProgressBar();
+            this.label_proportion_reassembly = new System.Windows.Forms.Label();
+            this.label_msg_reassembly = new System.Windows.Forms.Label();
+            this.label_percentage_reassembly = new System.Windows.Forms.Label();
+            this.label_reassembly = new System.Windows.Forms.Label();
+            this.progressBar_reassembly = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // label_percentage_files
@@ -234,11 +239,62 @@
             this.progressBar_store.Size = new System.Drawing.Size(744, 25);
             this.progressBar_store.TabIndex = 24;
             // 
+            // label_proportion_reassembly
+            // 
+            this.label_proportion_reassembly.AutoSize = true;
+            this.label_proportion_reassembly.Location = new System.Drawing.Point(12, 436);
+            this.label_proportion_reassembly.MaximumSize = new System.Drawing.Size(465, 0);
+            this.label_proportion_reassembly.Name = "label_proportion_reassembly";
+            this.label_proportion_reassembly.Size = new System.Drawing.Size(28, 17);
+            this.label_proportion_reassembly.TabIndex = 33;
+            this.label_proportion_reassembly.Text = "0/1";
+            // 
+            // label_msg_reassembly
+            // 
+            this.label_msg_reassembly.AutoSize = true;
+            this.label_msg_reassembly.Location = new System.Drawing.Point(238, 436);
+            this.label_msg_reassembly.MaximumSize = new System.Drawing.Size(465, 0);
+            this.label_msg_reassembly.Name = "label_msg_reassembly";
+            this.label_msg_reassembly.Size = new System.Drawing.Size(65, 17);
+            this.label_msg_reassembly.TabIndex = 32;
+            this.label_msg_reassembly.Text = "message";
+            // 
+            // label_percentage_reassembly
+            // 
+            this.label_percentage_reassembly.AutoSize = true;
+            this.label_percentage_reassembly.Location = new System.Drawing.Point(708, 436);
+            this.label_percentage_reassembly.Name = "label_percentage_reassembly";
+            this.label_percentage_reassembly.Size = new System.Drawing.Size(32, 17);
+            this.label_percentage_reassembly.TabIndex = 31;
+            this.label_percentage_reassembly.Text = "0 %";
+            // 
+            // label_reassembly
+            // 
+            this.label_reassembly.AutoSize = true;
+            this.label_reassembly.Location = new System.Drawing.Point(12, 388);
+            this.label_reassembly.MaximumSize = new System.Drawing.Size(465, 0);
+            this.label_reassembly.Name = "label_reassembly";
+            this.label_reassembly.Size = new System.Drawing.Size(82, 17);
+            this.label_reassembly.TabIndex = 30;
+            this.label_reassembly.Text = "Reassembly";
+            // 
+            // progressBar_reassembly
+            // 
+            this.progressBar_reassembly.Location = new System.Drawing.Point(12, 408);
+            this.progressBar_reassembly.Name = "progressBar_reassembly";
+            this.progressBar_reassembly.Size = new System.Drawing.Size(744, 25);
+            this.progressBar_reassembly.TabIndex = 29;
+            // 
             // ProgressForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(768, 391);
+            this.ClientSize = new System.Drawing.Size(768, 486);
+            this.Controls.Add(this.label_proportion_reassembly);
+            this.Controls.Add(this.label_msg_reassembly);
+            this.Controls.Add(this.label_percentage_reassembly);
+            this.Controls.Add(this.label_reassembly);
+            this.Controls.Add(this.progressBar_reassembly);
             this.Controls.Add(this.label_proportion_store);
             this.Controls.Add(this.label_msg_store);
             this.Controls.Add(this.label_percentage_store);
@@ -289,5 +345,10 @@
         private System.Windows.Forms.Label label_percentage_store;
         private System.Windows.Forms.Label label_store;
         private System.Windows.Forms.ProgressBar progressBar_store;
+        private System.Windows.Forms.Label label_proportion_reassembly;
+        private System.Windows.Forms.Label label_msg_reassembly;
+        private System.Windows.Forms.Label label_percentage_reassembly;
+        private System.Windows.Forms.Label label_reassembly;
+        private System.Windows.Forms.ProgressBar progressBar_reassembly;
     }
 }

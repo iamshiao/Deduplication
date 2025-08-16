@@ -111,6 +111,7 @@ namespace Deduplication.Controller
             _fileProgress.Total = total;
             _fileProgress.Processed = processed;
             _fileProgress.Message = msg;
+            _fileProgress.UpdateElapsedTime();
             _UpdateProgress(_fileProgress, "files");
         }
 
@@ -119,6 +120,7 @@ namespace Deduplication.Controller
             _bytesProgress.Total = total;
             _bytesProgress.Processed = processed;
             _bytesProgress.Message = msg;
+            _bytesProgress.UpdateElapsedTime();
             _UpdateProgress(_bytesProgress, "bytes");
         }
     }
