@@ -36,7 +36,8 @@ namespace Deduplication.View
                 {"files", new ProgressBarContollers(label_proportion_files, label_msg_files, progressBar_files, label_percentage_files) },
                 {"bytes", new ProgressBarContollers(label_proportion_bytes, label_msg_bytes, progressBar_bytes, label_percentage_bytes) },
                 {"chunks", new ProgressBarContollers(label_proportion_chunks, label_msg_chunks, progressBar_chunks, label_percentage_chunks) },
-                {"store", new ProgressBarContollers(label_proportion_store, label_msg_store, progressBar_store, label_percentage_store) }
+                {"store", new ProgressBarContollers(label_proportion_store, label_msg_store, progressBar_store, label_percentage_store) },
+                {"reassembly", new ProgressBarContollers(label_proportion_reassembly, label_msg_reassembly, progressBar_reassembly, label_percentage_reassembly) }
             };
         }
 

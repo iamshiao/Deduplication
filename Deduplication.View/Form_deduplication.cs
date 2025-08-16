@@ -113,6 +113,7 @@ namespace Deduplication.View
             _progressforms.UpdateProgress(tmp, "files");
             _progressforms.UpdateProgress(tmp, "bytes");
             _progressforms.UpdateProgress(tmp, "chunks");
+            _progressforms.UpdateProgress(tmp, "reassembly");
         }
 
         private void dataGridView_storedFiles_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -127,7 +128,21 @@ namespace Deduplication.View
                 if (saveFileDialog_reassemblyTo.ShowDialog() == DialogResult.OK &&
                     !string.IsNullOrWhiteSpace(saveFileDialog_reassemblyTo.FileName))
                 {
-                    _storage.Reassembly(fvm, saveFileDialog_reassemblyTo.FileName);
+                    // Show progress form for reassembly
+                    _progressforms.Show();
+                    
+                    // Clear previous progress
+                    var clearProgress = new ProgressInfo(1, 0, "");
+                    _progressforms.UpdateProgress(clearProgress, "reassembly");
+                    
+                    // Start reassembly with progress reporting
+                    Task.Run(() =>
+                    {
+                        _storage.Reassembly(fvm, saveFileDialog_reassemblyTo.FileName, _progressforms.UpdateProgress);
+                        
+                        // Hide progress form when done
+                        this.Invoke(new Action(() => _progressforms.Hide()));
+                    });
                 }
             }
         }
