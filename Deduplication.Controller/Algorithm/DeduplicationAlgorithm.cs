@@ -31,6 +31,8 @@ namespace Deduplication.Controller.Algorithm
                 ProgressInfo.Processed = processed.Value;
             if (msg != null)
                 ProgressInfo.Message = msg;
+            
+            ProgressInfo.UpdateElapsedTime();
         }
 
         public void EnableProgress()

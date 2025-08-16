@@ -73,18 +73,27 @@ namespace Deduplication.Model.DAL
                 // Update progress every 3 seconds or for the last chunk
                 if (DateTime.Now - lastUpdateTime >= updateInterval || processedChunks == totalChunks)
                 {
-                    progressInfo = new ProgressInfo(totalChunks, processedChunks, $"Processing chunk {processedChunks}/{totalChunks}");
+                    progressInfo.Total = totalChunks;
+                    progressInfo.Processed = processedChunks;
+                    progressInfo.Message = $"Processing chunk {processedChunks}/{totalChunks}";
+                    progressInfo.UpdateElapsedTime();
                     updateProgress?.Invoke(progressInfo, "reassembly");
                     lastUpdateTime = DateTime.Now;
                 }
             }
 
-            progressInfo = new ProgressInfo(totalChunks, processedChunks, "Writing file to disk");
+            progressInfo.Total = totalChunks;
+            progressInfo.Processed = processedChunks;
+            progressInfo.Message = "Writing file to disk";
+            progressInfo.UpdateElapsedTime();
             updateProgress?.Invoke(progressInfo, "reassembly");
 
             File.WriteAllBytes(outputFullPath, bytes.ToArray());
 
-            progressInfo = new ProgressInfo(totalChunks, totalChunks, "Reassembly completed");
+            progressInfo.Total = totalChunks;
+            progressInfo.Processed = totalChunks;
+            progressInfo.Message = "Reassembly completed";
+            progressInfo.UpdateElapsedTime();
             updateProgress?.Invoke(progressInfo, "reassembly");
         }
     }

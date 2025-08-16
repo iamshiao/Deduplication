@@ -28,6 +28,7 @@ namespace Deduplication.View
             public Label Percentage;
         }
         Dictionary<string, ProgressBarContollers> _progressBars;
+        Dictionary<string, Label> _sectionLabels;
         public ProgressForm()
         {
             InitializeComponent();
@@ -39,6 +40,14 @@ namespace Deduplication.View
                 {"store", new ProgressBarContollers(label_proportion_store, label_msg_store, progressBar_store, label_percentage_store) },
                 {"reassembly", new ProgressBarContollers(label_proportion_reassembly, label_msg_reassembly, progressBar_reassembly, label_percentage_reassembly) }
             };
+            _sectionLabels = new Dictionary<string, Label>()
+            {
+                {"files", label_files},
+                {"bytes", label_bytes},
+                {"chunks", label_chunks},
+                {"store", label_store},
+                {"reassembly", label_reassembly}
+            };
         }
 
         public void UpdateProgress(ProgressInfo pi, string name)
@@ -49,11 +58,36 @@ namespace Deduplication.View
             }
             this.Invoke(new Action(() =>
             {
-                _progressBars[name].Proportion.Text = $"{pi.Processed}/{pi.Total}";
-                _progressBars[name].Message.Text = pi.Message;
+                _progressBars[name].Proportion.Text = $"{pi.Processed}/{pi.Total} - {pi.FormattedElapsedTime}";
+                _progressBars[name].Message.Text = $"{pi.Message} (Total time: {pi.FormattedElapsedTime})";
                 _progressBars[name].Progress.Value = (int)Math.Round((double)(100 * pi.Processed) / pi.Total);
                 _progressBars[name].Percentage.Text = $"{_progressBars[name].Progress.Value} %";
+                
+                if (_sectionLabels.ContainsKey(name))
+                {
+                    string originalText = GetOriginalSectionText(name);
+                    _sectionLabels[name].Text = $"{originalText} (Elapsed: {pi.FormattedElapsedTime})";
+                }
             }));
+        }
+
+        private string GetOriginalSectionText(string name)
+        {
+            switch (name)
+            {
+                case "files":
+                    return "Files";
+                case "bytes":
+                    return "Bytes";
+                case "chunks":
+                    return "Chunking";
+                case "store":
+                    return "Storing chunks";
+                case "reassembly":
+                    return "Reassembly";
+                default:
+                    return name;
+            }
         }
 
         private void ProgressForm_FormClosing(object sender, FormClosingEventArgs e)

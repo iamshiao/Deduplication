@@ -139,9 +139,6 @@ namespace Deduplication.View
                     Task.Run(() =>
                     {
                         _storage.Reassembly(fvm, saveFileDialog_reassemblyTo.FileName, _progressforms.UpdateProgress);
-                        
-                        // Hide progress form when done
-                        this.Invoke(new Action(() => _progressforms.Hide()));
                     });
                 }
             }
